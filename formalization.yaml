@@ -1,0 +1,120 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Brooks' theorem"
+  description: >-
+    A Lean 4 / Mathlib formalization of Brooks' theorem: for k ≥ 3, a finite graph of maximum
+    degree at most k without a (k+1)-clique is k-colourable (no connectedness assumption), and a
+    finite connected graph that is neither complete nor an odd cycle is colourable with as many
+    colours as its maximum degree. The proof uses greedy colourings in Lovász's style and an
+    induction on the number of edges with a separation-and-gluing step.
+  authors:
+    - "Juan Pablo Traverso Gianini"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Juan Pablo Traverso Gianini"
+
+classification:
+  arxiv: ["math.CO"]
+  msc2020: ["05C15"]
+
+sources:
+  - title: "On colouring the nodes of a network"
+    authors:
+      - "R. L. Brooks"
+    id: "doi:10.1017/S030500410002168X"
+    type: "paper"
+    location: "Mathematical Proceedings of the Cambridge Philosophical Society 37 (1941), 194–197"
+    relationship: "formalizes"
+    note: "Brooks' theorem, in its classical form (connected, not complete, not an odd cycle) and in the clique form for k ≥ 3."
+    license: "unknown"
+    author_endorsement: "n/a"
+  - title: "Three short proofs in graph theory"
+    authors:
+      - "L. Lovász"
+    id: "doi:10.1016/0095-8956(75)90089-1"
+    type: "paper"
+    location: "Journal of Combinatorial Theory, Series B 19 (1975), 269–271"
+    relationship: "background"
+    note: "The greedy-colouring proof of Brooks' theorem with two non-adjacent neighbours coloured alike, followed (with a separation step replacing the connectivity case analysis)."
+    license: "unknown"
+    author_endorsement: "n/a"
+
+related_formalizations:
+  - id: "LeanPool/lean-pool, project BrooksSubcubic (PR #582)"
+    relationship: "other"
+    note: "The same author's subcubic case (maximum degree at most three) in Lean Pool; this entry is an independent proof of the general theorem and does not use it."
+
+status:
+  scope: >-
+    Proved for finite simple graphs (any universe): the clique form for every k ≥ 3 and the
+    classical form for every finite connected graph.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "autonomous"
+      models: ["Aristotle (Harmonic)"]
+      framework: "Aristotle CLI"
+      tool_setup: >-
+        Produced all proofs in one run from the formal statements and a proof plan; the return
+        was audited (statements and headers unchanged, no added axioms) and rebuilt locally.
+      cost:
+        wall_time: "under one hour"
+        spend_usd: "not tracked"
+        hardware: "API-only"
+      prompting_notes: "Formal statements and proof plan supplied."
+    - method: "agent"
+      models: ["Claude Opus 5.5"]
+      framework: "Claude Code (Anthropic)"
+      tool_setup: >-
+        Statement design, proof plan, integration and review of the Aristotle return, and the
+        Palomar packaging, checked with `lake build` and `#print axioms` (Lean v4.35.0-rc3,
+        Mathlib c55e6e786f49471c72fbddbec5415808896aec1e).
+      cost:
+        wall_time: "about one hour"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: "Natural-language instructions in Spanish, directed by the author."
+  spend_usd: "subscription-based"
+  notes: >-
+    The result was chosen by the human author; the Lean proofs are AI-generated and mechanically
+    verified (no `sorry`, axioms limited to propext, Classical.choice and Quot.sound, identical
+    elaborated types for the Challenge/Solution pair).
+
+fidelity:
+  divergences: >-
+    None in substance. "Complete" is `G = ⊤`, "odd cycle" is an isomorphism with Mathlib's
+    `cycleGraph n` for odd n, colourability is Mathlib's `Colorable`; the clique form uses
+    `CliqueFree (k + 1)` and `maxDegree ≤ k`.
+
+review:
+  status: "agent-reviewed"
+  reviewers:
+    - "Claude Opus 5.5 (AI agent in Claude Code, acting for the author)"
+  notes: >-
+    Agent review by Claude Opus 5.5, distinct from the mechanical verification: the agent
+    compared the statements with Brooks' theorem, checked that the Aristotle return left every
+    statement and header unchanged, and confirmed by `lake build`, `#print axioms` and a
+    comparison of the fully elaborated Challenge and Solution types that the proofs use no
+    `sorry` and only propext, Classical.choice and Quot.sound. The author directed the work and
+    approved the statements. No independent human mathematical review has been performed. The
+    result is classical; no mathematical novelty is claimed.
+
+alignment:
+  namespace: "BrooksColouring"
+  statements:
+    - source: "Brooks' theorem, clique form (k ≥ 3)"
+      lean: "BrooksColouring.colorable_of_cliqueFree"
+      module: "Challenge"
+      status: "proved"
+    - source: "Brooks (1941)"
+      lean: "BrooksColouring.brooks"
+      module: "Challenge"
+      status: "proved"
+
+acknowledgements: >-
+  Mathlib and the Lean community; Harmonic's Aristotle.
