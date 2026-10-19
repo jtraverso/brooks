@@ -1,4 +1,4 @@
-# Mathlib definitions used in Challenge.lean (Brooks' theorem)
+# Mathlib definitions used in Challenge.lean (Brooks' theorem, degree-choosability and blocks)
 
 Verbatim excerpts of the Mathlib definitions used by the statements in `Challenge.lean`, at the
 pinned Mathlib revision `c55e6e786f49471c72fbddbec5415808896aec1e` (tag `v4.35.0-rc3`, repository
@@ -221,4 +221,114 @@ abbrev Iso :=
 /-- `card α` is the number of elements in `α`, defined when `α` is a fintype. -/
 def card (α) [Fintype α] : ℕ :=
   (@univ α _).card
+```
+
+## SimpleGraph.comap
+
+`Mathlib/Combinatorics/SimpleGraph/Maps.lean`, line 126:
+
+```lean
+/-- Given a function, there is a contravariant induced map on graphs by pulling back the
+adjacency relation.
+This is one of the ways of creating induced graphs. See `SimpleGraph.induce` for a wrapper.
+
+This is surjective when `f` is injective (see `SimpleGraph.comap_surjective`). -/
+protected def comap (f : V → W) (G : SimpleGraph W) : SimpleGraph V where
+  Adj u v := G.Adj (f u) (f v)
+  symm.symm _ _ h := h.symm
+```
+
+## SimpleGraph.induce
+
+`Mathlib/Combinatorics/SimpleGraph/Maps.lean`, line 227:
+
+```lean
+/-- Restrict a graph to the vertices in the set `s`, deleting all edges incident to vertices
+outside the set. This is a wrapper around `SimpleGraph.comap`. -/
+abbrev induce (s : Set V) (G : SimpleGraph V) : SimpleGraph s :=
+  G.comap (Function.Embedding.subtype _)
+```
+
+## SimpleGraph.fromRel
+
+`Mathlib/Combinatorics/SimpleGraph/Basic.lean`, line 137:
+
+```lean
+/-- Construct the simple graph induced by the given relation. It
+symmetrizes the relation and makes it irreflexive. -/
+def SimpleGraph.fromRel {V : Type u} (r : V → V → Prop) : SimpleGraph V where
+  Adj a b := a ≠ b ∧ (r a b ∨ r b a)
+```
+
+## SimpleGraph.Walk.IsTrail
+
+`Mathlib/Combinatorics/SimpleGraph/Paths.lean`, line 69:
+
+```lean
+/-- A *trail* is a walk with no repeating edges. -/
+@[mk_iff isTrail_def]
+structure IsTrail {u v : V} (p : G.Walk u v) : Prop where
+  edges_nodup : p.edges.Nodup
+```
+
+## SimpleGraph.Walk.IsCircuit
+
+`Mathlib/Combinatorics/SimpleGraph/Paths.lean`, line 79:
+
+```lean
+/-- A *circuit* at `u : V` is a nonempty trail beginning and ending at `u`. -/
+@[mk_iff isCircuit_def]
+structure IsCircuit {u : V} (p : G.Walk u u) : Prop extends isTrail : IsTrail p where
+  ne_nil : p ≠ nil
+```
+
+## SimpleGraph.Walk.IsCycle
+
+`Mathlib/Combinatorics/SimpleGraph/Paths.lean`, line 84:
+
+```lean
+/-- A *cycle* at `u : V` is a circuit at `u` whose only repeating vertex
+is `u` (which appears exactly twice). -/
+structure IsCycle {u : V} (p : G.Walk u u) : Prop extends isCircuit : IsCircuit p where
+  support_nodup : p.support.tail.Nodup
+```
+
+## SimpleGraph.IsAcyclic
+
+`Mathlib/Combinatorics/SimpleGraph/Acyclic.lean`, line 56:
+
+```lean
+/-- A graph is *acyclic* (or a *forest*) if it has no cycles. -/
+def IsAcyclic : Prop := ∀ ⦃v : V⦄ (c : G.Walk v v), ¬c.IsCycle
+```
+
+## SimpleGraph.IsTree
+
+`Mathlib/Combinatorics/SimpleGraph/Acyclic.lean`, line 60:
+
+```lean
+/-- A *tree* is a connected acyclic graph. -/
+@[mk_iff]
+structure IsTree : Prop extends
+  connected : G.Connected where
+  /-- A tree is acyclic. -/
+  isAcyclic : G.IsAcyclic
+```
+
+## Set.encard
+
+`Mathlib/Data/Set/Card.lean`, line 67:
+
+```lean
+/-- The cardinality of a set as a term in `ℕ∞` -/
+noncomputable def encard (s : Set α) : ℕ∞ := ENat.card s
+```
+
+## Set.ncard
+
+`Mathlib/Data/Set/Card.lean`, line 613:
+
+```lean
+/-- The cardinality of `s : Set α` . Has the junk value `0` if `s` is infinite -/
+noncomputable def ncard (s : Set α) : ℕ := ENat.toNat s.encard
 ```

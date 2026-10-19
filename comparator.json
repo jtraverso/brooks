@@ -3,7 +3,16 @@
   "solution_module": "Solution",
   "theorem_names": [
     "BrooksColouring.colorable_of_cliqueFree",
-    "BrooksColouring.brooks"
+    "BrooksColouring.brooks",
+    "BlockStructure.exists_unique_block_of_adj",
+    "BlockStructure.inter_subsingleton",
+    "BlockStructure.exists_isBlock_superset",
+    "BlockStructure.isCutVertex_iff",
+    "BlockStructure.blockCutGraph_isTree",
+    "BlockStructure.gallai_iff",
+    "DegreeChoosability.degree_choosable_iff",
+    "DegreeChoosability.degree_choosable_iff_blocks",
+    "DegreeChoosability.list_brooks"
   ],
   "definition_names": [],
   "permitted_axioms": [

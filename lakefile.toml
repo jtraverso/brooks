@@ -1,6 +1,6 @@
 name = "brooks"
 version = "0.1.0"
-defaultTargets = ["BrooksLib", "Challenge", "Solution"]
+defaultTargets = ["BrooksLib", "ChoosabilityLib", "Challenge", "Solution"]
 requiresModuleSystem = true
 
 [leanOptions]
@@ -15,6 +15,10 @@ rev = "v4.35.0-rc3"
 [[lean_lib]]
 name = "BrooksLib"
 globs = ["BrooksLib.+"]
+
+[[lean_lib]]
+name = "ChoosabilityLib"
+globs = ["ChoosabilityLib.+"]
 
 [[lean_lib]]
 name = "Challenge"

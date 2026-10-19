@@ -2,13 +2,19 @@
 version: "v0.4"
 
 project:
-  name: "Brooks' theorem"
+  name: "Brooks' theorem, degree-choosability and blocks"
   description: >-
     A Lean 4 / Mathlib formalization of Brooks' theorem: for k ≥ 3, a finite graph of maximum
     degree at most k without a (k+1)-clique is k-colourable (no connectedness assumption), and a
     finite connected graph that is neither complete nor an odd cycle is colourable with as many
     colours as its maximum degree. The proof uses greedy colourings in Lovász's style and an
-    induction on the number of edges with a separation-and-gluing step.
+    induction on the number of edges with a separation-and-gluing step. Version 2 adds the
+    Erdős–Rubin–Taylor / Borodin theorem (a finite connected graph is degree-choosable, i.e.
+    colourable from any lists with |L(v)| ≥ deg(v), if and only if it is not a Gallai tree: some
+    block is neither complete nor an odd cycle), Brooks' theorem for lists (Vizing 1976), and a
+    library of blocks of graphs (blocks as maximal nonseparable vertex sets, cut vertices, unique
+    block per edge, blocks meeting in at most one vertex, the block–cut tree of a connected graph,
+    and the agreement of the block and induced-subgraph descriptions of Gallai trees).
   authors:
     - "Juan Pablo Traverso Gianini"
   license: "Apache-2.0"
@@ -17,7 +23,7 @@ project:
 
 classification:
   arxiv: ["math.CO"]
-  msc2020: ["05C15"]
+  msc2020: ["05C15", "05C40"]
 
 sources:
   - title: "On colouring the nodes of a network"
@@ -40,6 +46,57 @@ sources:
     note: "The greedy-colouring proof of Brooks' theorem with two non-adjacent neighbours coloured alike, followed (with a separation step replacing the connectivity case analysis)."
     license: "unknown"
     author_endorsement: "n/a"
+  - title: "Choosability in graphs"
+    authors:
+      - "P. Erdős"
+      - "A. L. Rubin"
+      - "H. Taylor"
+    type: "paper"
+    location: "Proceedings of the West Coast Conference on Combinatorics, Graph Theory and Computing, Congressus Numerantium 26 (1979), 125–157"
+    relationship: "formalizes"
+    note: "Version 2: degree-choosability of connected graphs that are not Gallai trees, and Brooks' theorem for lists (no DOI)."
+    license: "all rights reserved"
+    author_endorsement: "n/a"
+  - title: "Criteria of chromaticity of a degree prescription"
+    authors:
+      - "O. V. Borodin"
+    type: "paper"
+    location: "Abstracts of the IV All-Union Conference on Theoretical Cybernetics, Novosibirsk (1977), 127–128 (in Russian)"
+    relationship: "formalizes"
+    note: "Version 2: the degree-choosability theorem, obtained independently (no DOI)."
+    license: "all rights reserved"
+    author_endorsement: "n/a"
+  - title: "Vertex colorings with given colors"
+    authors:
+      - "V. G. Vizing"
+    type: "paper"
+    location: "Metody Diskretnogo Analiza 29 (1976), 3–10 (in Russian)"
+    relationship: "formalizes"
+    note: "Version 2: Brooks' theorem for lists (no DOI)."
+    license: "all rights reserved"
+    author_endorsement: "n/a"
+  - title: "The colour theorems of Brooks and Gallai extended"
+    authors:
+      - "A. V. Kostochka"
+      - "M. Stiebitz"
+      - "B. Wirth"
+    id: "doi:10.1016/0012-365X(95)00294-7"
+    type: "paper"
+    location: "Discrete Mathematics 162 (1996), 299–303"
+    relationship: "background"
+    note: "Version 2: short proof of the degree-choosability theorem used as background for the proof plan."
+    license: "all rights reserved"
+    author_endorsement: "not-contacted"
+  - title: "Graph Theory"
+    authors:
+      - "Reinhard Diestel"
+    id: "doi:10.1007/978-3-662-53622-3"
+    type: "book"
+    location: "Graduate Texts in Mathematics 173, 5th edition, Springer (2017), Section 3.1"
+    relationship: "background"
+    note: "Version 2: blocks, cut vertices and the block graph."
+    license: "all rights reserved"
+    author_endorsement: "not-contacted"
 
 related_formalizations:
   - id: "LeanPool/lean-pool, project BrooksSubcubic (PR #582)"
@@ -48,8 +105,13 @@ related_formalizations:
 
 status:
   scope: >-
-    Proved for finite simple graphs (any universe): the clique form for every k ≥ 3 and the
-    classical form for every finite connected graph.
+    Proved for finite simple graphs (any universe), under the hypotheses of each statement: the
+    clique form for every k ≥ 3 (maximum degree at most k, no (k+1)-clique); the classical form
+    for finite connected graphs that are neither complete nor odd cycles; (version 2) the
+    degree-choosability equivalence for every finite connected graph (colours in ℕ), Brooks'
+    theorem for lists for finite connected graphs that are neither complete nor odd cycles (any
+    colour type), and the block results for every finite graph (the block–cut tree for connected
+    graphs).
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -60,8 +122,11 @@ automation:
       models: ["Aristotle (Harmonic)"]
       framework: "Aristotle CLI"
       tool_setup: >-
-        Produced all proofs in one run from the formal statements and a proof plan; the return
-        was audited (statements and headers unchanged, no added axioms) and rebuilt locally.
+        Produced all proofs from the formal statements and proof plans: one run for version 1;
+        for version 2, one run for the degree-choosability results (reusing the version-1 Brooks
+        theorem) and one run for the block library (proposed by the author); each return was
+        audited (statements and headers unchanged, libraries unchanged, no added axioms) and
+        rebuilt locally.
       cost:
         wall_time: "under one hour"
         spend_usd: "not tracked"
@@ -71,7 +136,9 @@ automation:
       models: ["Claude Opus 5.5"]
       framework: "Claude Code (Anthropic)"
       tool_setup: >-
-        Statement design, proof plan, integration and review of the Aristotle return, and the
+        Statement design (for version 2: the encoding of Gallai trees by induced 2-connected
+        subgraphs and the block statements, checked by brute force on all graphs with at most 7,
+        resp. 6, vertices), proof plans, integration and review of the Aristotle returns, and the
         Palomar packaging, checked with `lake build` and `#print axioms` (Lean v4.35.0-rc3,
         Mathlib c55e6e786f49471c72fbddbec5415808896aec1e).
       cost:
@@ -89,7 +156,12 @@ fidelity:
   divergences: >-
     None in substance. "Complete" is `G = ⊤`, "odd cycle" is an isomorphism with Mathlib's
     `cycleGraph n` for odd n, colourability is Mathlib's `Colorable`; the clique form uses
-    `CliqueFree (k + 1)` and `maxDegree ≤ k`.
+    `CliqueFree (k + 1)` and `maxDegree ≤ k`. Version 2: lists are finsets indexed by vertices; in
+    the degree-choosability equivalence the colours are natural numbers (with too few colours the
+    equivalence would fail), while Brooks' theorem for lists holds for any colour type. A block is
+    a maximal vertex set S such that G[S] is connected and, when |S| ≥ 3, G[S − x] is connected for
+    every x ∈ S (so bridges and isolated vertices are blocks); a cut vertex separates two vertices
+    that are joined in G; the block–cut graph has the blocks and the cut vertices as vertices.
 
 review:
   status: "agent-reviewed"
@@ -113,6 +185,42 @@ alignment:
       status: "proved"
     - source: "Brooks (1941)"
       lean: "BrooksColouring.brooks"
+      module: "Challenge"
+      status: "proved"
+    - source: "Every edge lies in exactly one block"
+      lean: "BlockStructure.exists_unique_block_of_adj"
+      module: "Challenge"
+      status: "proved"
+    - source: "Two distinct blocks share at most one vertex"
+      lean: "BlockStructure.inter_subsingleton"
+      module: "Challenge"
+      status: "proved"
+    - source: "Every nonseparable set lies in a block"
+      lean: "BlockStructure.exists_isBlock_superset"
+      module: "Challenge"
+      status: "proved"
+    - source: "Cut vertices are the vertices in two blocks"
+      lean: "BlockStructure.isCutVertex_iff"
+      module: "Challenge"
+      status: "proved"
+    - source: "The block–cut graph of a connected graph is a tree"
+      lean: "BlockStructure.blockCutGraph_isTree"
+      module: "Challenge"
+      status: "proved"
+    - source: "Gallai trees: block and induced-subgraph descriptions agree"
+      lean: "BlockStructure.gallai_iff"
+      module: "Challenge"
+      status: "proved"
+    - source: "Erdős–Rubin–Taylor / Borodin: degree-choosable iff not a Gallai tree"
+      lean: "DegreeChoosability.degree_choosable_iff"
+      module: "Challenge"
+      status: "proved"
+    - source: "Erdős–Rubin–Taylor / Borodin, block form"
+      lean: "DegreeChoosability.degree_choosable_iff_blocks"
+      module: "Challenge"
+      status: "proved"
+    - source: "Brooks' theorem for lists (Vizing 1976)"
+      lean: "DegreeChoosability.list_brooks"
       module: "Challenge"
       status: "proved"
 
