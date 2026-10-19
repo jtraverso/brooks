@@ -31,7 +31,8 @@ also covers maximum degree at most 2. The clique form generalizes the author's s
    vertices lying in two blocks; the block–cut graph (`GraphBlocks.blockCutGraph`) of a connected
    graph is a tree; and the block and induced-subgraph descriptions of Gallai trees agree. Mathlib
    has no blocks; the definitions are stated in `Challenge.lean` verbatim, with the same names as
-   in the library, so the comparator checks them declaration by declaration.
+   in the library. `comparator.json` selects only the theorems; the definitions are not selected
+   separately and enter the check only as part of the theorem statements that use them.
 
 ## Files
 
